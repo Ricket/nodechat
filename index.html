@@ -1,0 +1,51 @@
+<html>
+<head>
+	<title>Chat</title>
+	<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+	<script type="text/javascript">
+	window.onload = function () {
+		var socket = io.connect('http://localhost:11999');
+		var chatlog = document.getElementById('chatlog');
+		socket.on('chatmsg', function (data) {
+			chatlog.value += data + "\n";
+		});
+		
+		var chatmsg = document.getElementById('chatmsg');
+		var chatmsgform = document.getElementById('chatmsgform');
+		chatmsgform.onsubmit = function () {
+			if(chatmsg.value.length > 0) {
+				chatmsg.disabled = true;
+				socket.emit('chatmsg', chatmsg.value, function () {
+					chatmsg.value = '';
+					chatmsg.disabled = false;
+				});
+			}
+			return false;
+		}
+		
+	}
+	</script>
+	<style type="text/css">
+	#content {
+		width:500px;
+		height:px;
+		margin:auto;
+		border:1px solid #ff0000;
+	}
+	#chatlog {
+		width:100%;
+		height:475px;
+	}
+	#chatmsg {
+		width:100%;
+		height:25px;
+	}
+	</style>
+</head>
+<body>
+	<div id="content">
+		<textarea id="chatlog" readonly="readonly"></textarea>
+		<form id="chatmsgform"><input type="text" id="chatmsg" /></form>
+	</div>
+</body>
+</html>
